@@ -10,7 +10,8 @@ class Singer(models.Model):
 
 
 class Song(models.Model):
-  singer = models.ForeignKey(Singer, on_delete=models.CASCADE, related_name='songs')
+  id = models.AutoField(primary_key=True)
+  singer = models.ForeignKey(Singer, blank=False, null=False, on_delete=models.CASCADE, related_name='songs')
   title = models.CharField(max_length=100)
   release_date = models.DateField()
   created_at = models.DateTimeField(auto_now_add=True)
