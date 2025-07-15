@@ -23,11 +23,15 @@ class SingerSerializer(serializers.ModelSerializer):
     model = Singer
     fields = '__all__'
 
+  image = serializers.ImageField(use_url=True, required=False)
+
+
 class SongSerializer(serializers.ModelSerializer):
   class Meta:
       model = Song
       fields = '__all__'
       read_only_fields = ['singer']
+
 
 class TagSerializer(serializers.ModelSerializer):
     
