@@ -16,8 +16,11 @@ class Singer(models.Model):
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
   tags = models.ManyToManyField(Tag, blank=True)
-  image = models.ImageField(upload_to=image_upload_path, blank=True, null=True)
+  #image = models.ImageField(upload_to=image_upload_path, blank=True, null=True)
 
+class SingerImage(models.Model):
+  singer = models.ForeignKey(Singer, on_delete=models.CASCADE, related_name='images')
+  image = models.ImageField(upload_to='singer_images/')
 
 class Song(models.Model):
   id = models.AutoField(primary_key=True)

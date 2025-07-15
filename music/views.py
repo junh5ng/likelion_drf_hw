@@ -5,8 +5,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
-from .models import Singer, Song, Tag
-from .serializers import SingerSerializer, SongSerializer, TagSerializer
+from .models import Singer, Song, Tag, SingerImage
+from .serializers import SingerSerializer, SongSerializer, TagSerializer, SingerImageSerializer
 
 @api_view(['GET', 'POST'])
 def singer_list_create(request):
@@ -80,3 +80,23 @@ def find_tag(request, tags_name):
     singer = Singer.objects.filter(tags__in = [tags])
     serializer = SingerSerializer(singer, many=True)
     return Response(data=serializer.data)
+  
+@api_view(['GET', 'POST'])
+def singer_image_create(request, singer_id):
+  if request.method == 'GET':
+    singer = get_object_or_404(Singer, pk=singer_id)
+    images = singer.images.all()
+    serializer = SingerImageSerializer(images, many=True)
+    return Response(serializer.data)
+  
+  singer = get_object_or_404(Singer, pk=singer_id)
+  image_files = request.FILES.getlist('image')
+
+  upload_images = []
+
+  for image_file in image_files:
+    singer_image = SingerImage.objects.create(singer=singer, image=image_file)
+    upload_images.append(SingerImageSerializer(singer_image).data)
+
+  return Response(upload_images)
+  
