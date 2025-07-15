@@ -22,3 +22,9 @@ class SongSerializer(serializers.ModelSerializer):
       model = Song
       fields = '__all__'
       read_only_fields = ['singer']
+
+class TagSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+      model = Tag
+      fields = '__all__'

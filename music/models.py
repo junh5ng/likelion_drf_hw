@@ -1,12 +1,18 @@
 from django.db import models
 
 # Create your models here.
+
+class Tag(models.Model):
+  id = models.AutoField(primary_key=True)
+  name = models.CharField(max_length=50)
+
 class Singer(models.Model):
   id = models.AutoField(primary_key=True)
   content = models.TextField() # 가수설명
   debut = models.DateField() # 데뷔일자
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
+  tags = models.ManyToManyField(Tag, blank=True)
 
 
 class Song(models.Model):
