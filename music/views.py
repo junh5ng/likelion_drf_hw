@@ -5,8 +5,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
-from .models import Singer, Song
-from .serializers import SingerSerializer, SongSerializer
+from .models import Singer, Song, Tag
+from .serializers import SingerSerializer, SongSerializer, TagSerializer
 
 @api_view(['GET', 'POST'])
 def singer_list_create(request):
@@ -18,8 +18,18 @@ def singer_list_create(request):
   if request.method == 'POST':
     serializer = SingerSerializer(data=request.data)
     if serializer.is_valid(raise_exception=True):
-      serializer.save()
-      return Response(serializer.data)
+      singer = serializer.save()
+      content = request.data['content']
+      tags = [words[1:] for words in content.split(' ') if words.startswith('#')]
+      for t in tags:
+        try:
+          tag = get_object_or_404(Tag,name=t)
+        except:
+          tag = Tag(name=t)
+          tag.save()
+        singer.tags.add(tag)
+      singer.save()
+    return Response(data=SingerSerializer(singer).data)
     
 
 @api_view(['GET', 'PATCH', 'DELETE'])
