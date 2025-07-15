@@ -73,3 +73,10 @@ def song_read_create(request, singer_id):
             return Response(serializer.data)
         return Response(serializer.errors)
     
+@api_view(['GET'])
+def find_tag(request, tags_name):
+  tags = get_object_or_404(Tag, name=tags_name)
+  if request.method == 'GET':
+    singer = Singer.objects.filter(tags__in = [tags])
+    serializer = SingerSerializer(singer, many=True)
+    return Response(data=serializer.data)
