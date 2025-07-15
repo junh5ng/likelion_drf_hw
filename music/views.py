@@ -43,15 +43,19 @@ def singer_detail_update_delete(request, singer_id):
     elif request.method == 'PATCH':
         serializer = SingerSerializer(instance=singer, data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors)
-
-    elif request.method == 'DELETE':
-        singer.delete()
-        data = {"deleted_singer": singer_id}
-        return Response(data)
-    
+          singer=serializer.save()
+          singer.tags.clear()
+          content=request.data.get("content")
+          tags = [words[1:] for words in content.split(' ') if words.startswith('#')]
+          for t in tags:
+              try:
+                tag = get_object_or_404(Tag,name=t)
+              except:
+                tag = Tag(name=t)
+                tag.save()
+              singer.tags.add(tag)
+          singer.save()
+        return Response(data=SingerSerializer(singer).data)
 
 @api_view(['GET', 'POST'])
 def song_read_create(request, singer_id):
