@@ -13,6 +13,12 @@ class SingerSerializer(serializers.ModelSerializer):
       serializer = SongSerializer(instance.songs.all(), many=True)
       return serializer.data
   
+  tags = serializers.SerializerMethodField()
+
+  def get_tags(self, instance):
+    tag = instance.tags.all()
+    return [t.name for t in tag]
+  
   class Meta:
     model = Singer
     fields = '__all__'
